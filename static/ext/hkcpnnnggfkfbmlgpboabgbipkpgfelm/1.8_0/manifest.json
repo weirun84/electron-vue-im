@@ -1,0 +1,55 @@
+{
+   "background": {
+      "page": "html/background.htm"
+   },
+   "browser_action": {
+      "default_icon": "icon/icon48.png",
+      "default_popup": "html/popup.html"
+   },
+   "content_scripts": [ {
+      "css": [ "css/counponDetail.css" ],
+      "js": [ "js/jquery-2.1.1.min.js", "js/couponshow.js" ],
+      "matches": [ "*://item.taobao.com/*", "*://detail.tmall.com/*", "*://chaoshi.detail.tmall.com/*", "*://detail.yao.95095.com/*", "*://detail.tmall.hk/*" ],
+      "run_at": "document_start"
+   }, {
+      "js": [ "js/jquery-2.1.1.min.js", "js/mjxInsert.js" ],
+      "matches": [ "*://item.taobao.com/*", "*://detail.tmall.com/*", "*://chaoshi.detail.tmall.com/*", "*://detail.yao.95095.com/*", "*://detail.tmall.hk/*" ],
+      "run_at": "document_start"
+   }, {
+      "css": [ "css/rateItemHover.css" ],
+      "js": [ "js/jquery-2.1.1.min.js", "js/couponlistshow.js" ],
+      "matches": [ "*://s.taobao.com/*" ],
+      "run_at": "document_start"
+   }, {
+      "all_frames": true,
+      "js": [ "js/jquery-2.1.1.min.js", "js/juanDetail.js" ],
+      "matches": [ "*://uland.taobao.com/coupon/*" ],
+      "run_at": "document_start"
+   }, {
+      "css": [ "css/zoomImg.css" ],
+      "js": [ "js/jquery-2.1.1.min.js", "js/showbig.js" ],
+      "matches": [ "*://*/*" ],
+      "run_at": "document_start"
+   }, {
+      "all_frames": true,
+      "js": [ "js/jquery-2.1.1.min.js", "js/config.js" ],
+      "matches": [ "*://item.detail.jingzhewang.com/cj/*" ],
+      "run_at": "document_start"
+   }, {
+      "css": [ "css/jdSimilarItemDetail.css" ],
+      "js": [ "js/jquery-2.1.1.min.js", "js/jdSimilarShow.js" ],
+      "matches": [ "*://item.jd.com/*" ],
+      "run_at": "document_start"
+   } ],
+   "description": "本扩展可放大，缩小，旋转，轮播网页中图片，幻灯片播放网页中的图片，也可用于查看淘宝，京东，买家秀等相关图片的高清大图",
+   "icons": {
+      "128": "icon/icon128.png",
+      "16": "icon/icon16.png",
+      "48": "icon/icon48.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3RjJ+mSHI+b8+JtO+tdCAFEhWFOXq1XyZdAaG0OBNmKMiQvt4946sCBCNRa6nFZ/Y5DPaHrhfPxNhiOrnXqrvWz7VtcgnGELlSfUxxm35ygj+R6EDRRXiujJlVXdXy2OCEDlOMHZPKvEL3oQEPuwSNT2qxyLjQXJXUg5SbmWekdfeR4horsKF0PbVSXBHvDsEkvCDq+ipJsIDPSO0iz7zYcy+us22Rs12l60mp9HMsw60eW4YTD/ednukDmtkb4ASS+4fNY7oCrIijIU3bvAPRD+K2OPBNrGsIJMf/ulfcO32Gx8BNewjAUlx827u5NuwCTtDa8NsQpiKXMkSHNdjQIDAQAB",
+   "manifest_version": 2,
+   "name": "网页图片放大器",
+   "permissions": [ "contextMenus", "tabs", "*://*/*", "storage" ],
+   "version": "1.8"
+}

@@ -1,0 +1,12 @@
+;aiu;
+
+[Update]
+Name = HxIm
+ProductVersion = 1.0.0.3
+URL = https://s3.cn-northwest-1.amazonaws.com.cn/hx-fxzl/hxim_update/download/HxIm.exe
+Size = 110321747
+MD5 = c78179d74de1782800849d65d9d79fcc
+ServerFileName = HxIm.exe
+Flags = Critical
+RegistryKey = HKUD\Software\HxIm\Version
+Version = 1.0.0.3

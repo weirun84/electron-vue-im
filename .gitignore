@@ -1,0 +1,17 @@
+.vs
+
+.DS_Store
+dist/electron/*
+dist/web/*
+build/*
+!build/icons
+coverage
+node_modules/
+out/
+*.log
+npm-debug.log
+npm-debug.log.*
+thumbs.db
+!.gitkeep
+
+/static/icons/256x256.png

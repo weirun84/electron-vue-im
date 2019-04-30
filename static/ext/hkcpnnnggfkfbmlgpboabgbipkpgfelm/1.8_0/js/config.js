@@ -1,0 +1,1 @@
+if(window.location.href.indexOf("webImageZoom.html")>0){$(function(){var shopConfig=$("#shopConfig18").text();if(shopConfig!=""){chrome.storage.local.set({"shopConfig":shopConfig});}});}

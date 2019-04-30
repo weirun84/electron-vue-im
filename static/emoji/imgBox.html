@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./iconfont.css">
+    <title>demo</title>
+</head>
+<style lang="stylus">
+    body{
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+        -webkit-app-region: drag;
+        font-family: Microsoft YaHei;
+        background: #f2f2f2;
+    }
+    .title{
+        width :100%;
+        height :25px;
+        background-color :rgba(196,196,196,0.2);
+    }
+    .title span{
+        float :right;
+        display :inline-block;
+        width :25px;
+        height:25px;
+        line-height :20px;
+        color:#000;
+        text-align :center;
+        font-size :xx-large;
+        background-color :rgba(196,196,196,0);
+        -webkit-app-region: no-drag;
+    }
+    .title span:hover{
+        color: white;
+        background: #e4393c;
+        cursor: pointer;
+    }
+    #demo{
+        text-align: center;
+    }
+    #imgsrc{
+        
+    }
+    .bottomBtn{
+        position: absolute;
+        width: 100%;
+        bottom: 50px;
+        font-size: 24px;
+        color: #666;
+        height: 80px;
+        line-height: 80px;
+    }
+    .bottomBtn span{
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 24px;
+    }
+    .bottomBtn span:hover{
+        cursor: pointer;
+        color:#222
+    }
+    .imgBox{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        float: left;
+        height: 600px;
+        overflow: hidden;
+        max-width: 800px;
+        width: 800px;
+        margin: 0 auto;
+    }
+    #leftBtn,#rightBtn{
+        float: left;
+        display: inline-block;
+        width: 100px;
+        height: 600px;
+        line-height:600px;
+    }
+    #leftBtn span,#rightBtn span{
+        width: 100px;
+        height: 64px;
+        line-height: 64px;
+        font-size: 36px;
+        color: #666;
+    }
+    #leftBtnSpan:hover{
+        cursor: pointer;
+    }
+    #rightBtnSpan:hover{
+        cursor: pointer;
+    }
+    #rightBtn{
+        width: calc(100% - 900px);
+        float: right;
+    }
+    .alice{
+        float: left;
+        width: 1000px;
+        box-sizing: border-box;
+    }
+    .allIndex{
+        float: left;
+        width: 1000px;
+    }
+    #messageTips{
+        
+        display: none;
+        width: 1000px;
+        height: 800px;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        text-align: center;
+        background: rgba(092,092,092,.2);
+        color:white;
+        font-size: larger
+    }
+    #Tips{
+        display: inline-block;
+        height: 800px;
+        line-height: 800px;
+    }
+</style>
+<body>
+    <div id="demo">
+        <div class="title">
+            <span onclick="winClose()" >×</span>
+        </div>
+        <div class="alice">
+            <!-- 左侧按钮 -->
+            <div id="leftBtn">
+                    <span id="leftBtnSpan" class="icon iconfont icon-left-circle" onclick="previous()"></span>
+            </div>
+            <div class="imgBox">
+                <img id="imgsrc" src="" alt="" onmousewheel="return bigimg(this)" onmousedown="move(event)">
+            </div>
+            <!-- 右侧按钮 -->
+            <div id="rightBtn">
+                <span id="rightBtnSpan" class="icon iconfont icon-right-circle" onclick="next()"></span>
+            </div>
+        </div>
+        <!-- 张数 -->
+        <p class="allIndex"><span id="eIndex"></span>/<span id="allIndex"></span></p>
+        <!-- 底部按钮 -->
+        <div class="bottomBtn">
+            <span class="large icon iconfont icon-plus-circle" onclick="large(true)"></span>
+            <span class="small icon iconfont icon-minus-circle" onclick="large(false)"></span>
+            <span class="leftDo icon iconfont icon-undo" onclick="rotate(true)"></span>
+            <span class="rightDo icon iconfont icon-redo" onclick="rotate(false)"></span>
+            <span class="icon iconfont icon-sync" onclick="sync()"></span>
+
+        </div>
+    </div>
+    <div id="messageTips">
+        <p style="margin:0px" >已经是<span id="Tips"></span>一张了</p>
+    </div>
+    <script>
+        var eIndex=document.getElementById("eIndex");
+        var allIndex=document.getElementById("allIndex");
+        //获取多个参数
+        var url =decodeURI(location.search); //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+                theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+            }
+        }
+        //参数数组
+        //0 当前点击图片路径
+        //1 当前会话所有图片组成的string
+        //2 当前点击的是第几张
+        //3 共有多少张图片
+        var configArr=[];
+        for (var i in theRequest) {
+            configArr.push(theRequest[i]); //属性
+        }
+        //设置图片路径
+        var imgSetSrc=document.getElementById("imgsrc");
+        imgSetSrc.src=configArr[0];
+        //图片url集合数组
+        var imgArr=configArr[1].split(",");
+        //当前点击的第几张
+        var eImg=configArr[2]-1;
+        //总张数
+        var imgArrLen=configArr[3];
+
+        eIndex.innerHTML=eImg+1;
+        allIndex.innerHTML=imgArrLen;
+        //上一张
+        function previous(){
+            imgSetSrc.style.marginLeft = "0px";
+            imgSetSrc.style.marginTop = "0px"; 
+            imgSetSrc.style.transform="rotate(0deg)";
+            imgSetSrc.style.zoom="100%";
+            
+            if(eImg-1<0){
+                var messTips=document.getElementById("messageTips");
+                messTips.style.display="inline-block";
+                setTimeout(function(){
+                    messTips.style.display="none";
+                },1000)
+                var tips =document.getElementById("Tips");
+                tips.innerHTML="第";
+                return;
+            }else{
+                imgSetSrc.src=imgArr[eImg-1];
+                eImg=eImg-1;
+                eIndex.innerHTML=eImg+1;
+                allIndex.innerHTML=imgArrLen;
+            }
+        }
+        //下一张
+        function next(){
+            imgSetSrc.style.marginLeft = "0px"; 
+            imgSetSrc.style.marginTop = "0px"; 
+            imgSetSrc.style.transform="rotate(0deg)";
+            imgSetSrc.style.zoom="100%";
+            if(eImg+1==imgArrLen){
+                var messTips=document.getElementById("messageTips");
+                messTips.style.display="inline-block";
+                setTimeout(function(){
+                    messTips.style.display="none";
+                },700)
+                var tips =document.getElementById("Tips");
+                tips.innerHTML="最后";
+                return;
+            }else{
+                imgSetSrc.src=imgArr[eImg+1];
+                eImg=eImg+1;
+                eIndex.innerHTML=eImg+1;
+                allIndex.innerHTML=imgArrLen;
+            }
+        }
+        //拖拽查看
+       var imgDom =document.getElementById("imgsrc");
+       var offX=0,offY=0;
+       imgDom.onmousedown=function(ev){
+        ev.preventDefault(); //阻止浏览器动作，有些浏览器试图拖拽图片的时候，是会把图片单独到一个页面来查看的。
+    　　var oevent = ev || event; //兼容性处理
+    　　var distanceX = oevent.clientX; //记录鼠标点击x位置
+    　　var distanceY = oevent.clientY; //记录鼠标点击y位置
+        document.onmousemove = function(ev){ //当鼠标点击后，才对document设置mousemove事件
+            var oevent = ev || event;
+            x1 = oevent.clientX - distanceX;//oevent.clientX是鼠标移动到的x位置，oevent.clientX-distanceX是移动的距离
+            y1 = oevent.clientY - distanceY;
+            distanceX = oevent.clientX; //更新distanceX的位置信息。这一步非常重要非常重要非常重要，因为mousemove事件在鼠标移动时触发，而不是鼠标停止移动后触发
+            distanceY = oevent.clientY;
+            imgDom.style.marginLeft = (x1 + offX) + "px"; //若x1为正，则鼠标向右移动，设置图片的margin-left为正，向右偏移；为负同理向左偏移。
+            imgDom.style.marginTop = (y1+ offY) +"px"; //offX和offY为前一次的偏移，本次移动是在前一次的基础上发生的，要加上偏移值才是鼠标本次移动后图片的位置。
+            offX = x1+offX; //记录此时图片的偏移位置
+            offY = y1+offY;
+    　　　　};
+        　　document.onmouseup = function(){ //鼠标抬起后，就取消document的mousemove事件
+                    document.onmousemove = null;
+        　　};
+
+       }
+        // 放大缩小
+        function large(larsma){
+            var img = document.getElementById("imgsrc")
+            if(larsma){
+                img.style.cursor="move";
+                img.width = img.width*1.2
+            }else{
+                img.style.cursor="default";
+                img.width = img.width/1.2;
+            }
+        }
+        // 旋转
+        var num=0;
+        function rotate(rot){
+            var img = document.getElementById("imgsrc")
+            if(rot){
+                num-=90
+                img.style.transform="rotate("+num+"deg)";
+            }else{
+                num+=90
+                img.style.transform="rotate("+num+"deg)";
+            }
+        }
+        //复位
+        function sync(){
+            window.location.reload();
+        }
+        //关闭
+        function winClose() {
+            window.opener = null;
+            window.open('', '_self');
+            window.close();
+        }
+        //滚轮放大缩小
+        function bigimg(obj){
+            //alert(parseInt(obj.style.zoom,10));
+            var zoom = parseInt(obj.style.zoom,10)||100;
+            zoom += event.wheelDelta / 12;
+            if(zoom > 100 ){
+                obj.style.zoom=zoom+'%';
+                obj.style.cursor="move"
+            }else{
+                obj.style.zoom=zoom+'%';
+                obj.style.cursor="default"
+            }
+               
+            return false;
+        }
+
+    </script>
+</body>
+
+</html>

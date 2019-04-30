@@ -1,0 +1,41 @@
+.lxRateImgParent{
+
+}
+.lxRateImgParent .lxRateImgContent{
+    position: absolute;
+    z-index: 1;
+    width: 250px;
+    height: 0px;
+    overflow: hidden;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    opacity: 0.9;
+    transition: height 0.1s;
+}
+.lxRateImgParent .lxRateImgContent img{
+    margin: 1px;
+}
+.lxRateImgParent .lxRateImgContent img:hover {
+    margin: 0px;
+    border:1px solid rgb(255, 0, 0);
+}
+.lxRateImgParent .lxRateImgBigHover{
+    display: none;
+    position: absolute;
+    z-index: 1;
+    width: 310px;
+    height: 310px;
+    top:-332px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+.lxRateImgParent:hover .lxRateImgBigHover{
+    display: block;
+}
+
+.item .pic-box:hover .lxRateImgContent{
+    height: 42px;
+}

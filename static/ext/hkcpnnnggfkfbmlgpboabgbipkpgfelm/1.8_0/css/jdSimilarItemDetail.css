@@ -1,0 +1,162 @@
+@charset "utf-8";
+#STCouponTipParent{
+    font-family: 'Microsoft Yahei';
+    font-size:14px;
+    color:#323232;
+    margin:5px 0px 0px 0px;
+    position:relative;
+    z-index:1;
+    width:400px;
+    margin-bottom: 10px;
+}
+#STCouponTipParent:hover{
+    z-index:9999;
+}
+#bijiaTip #STbijiaTipA{
+    display:block;
+    width:355px;
+    height: 45px;
+    line-height: 45px;
+    background-color: #ED145B;
+    color:#ffffff;
+    font-family: 'Microsoft Yahei';
+    font-size:18px;
+    text-align:center;
+    text-decoration:none;
+    margin-top: 5px;
+}
+#bijiaTip #lxSTDataRefresh{
+    position: absolute;
+    right: 0px;
+    cursor: pointer;
+    width:  45px;
+    height: 45px;
+    background-color: #d50046;
+    background-repeat: no-repeat;
+    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAYAAAA6GuKaAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAJcSURBVHja7Jnfa81hHMdf3/kxtrClnRnRtFygtSYpkYTtxoUr5ULxB7iQGyklF2TJLXeyKz9uJFxwRalljSVcSWs1LmjNUCR6ufARE7POec7mq++nnk7nnOd5f14933O+n/fn+WYqeYsachgFdAFdQP/n0NuBUt6gu4EzwJw8QX8E9gKngCyl8OyEWsuANmAt0Ah0xeeHgC/ASeBNikRZgjLeHjvaBXROMm8rcDfJ9qjljlnqEXXEb/FOvaweVHeo5/0RJ9RFFeSaMMpd2KheDKAx9bjaqs79ac6x+L5HzVIBlwvdoN4MoD513R/mnVZ744owk9C16rkAvq22TDK3Pa4IMw29W/2sPlCXVgMoNfQC9WHscvdMAatTLi4ZsC1uaZeAO3nwHvXAHuATcDVe/3noVmAL8AK4nxeX1xaObRgYyQt0U/yuX4aPSB0LgSVAXTVcXrXOG44C18LOJoMeC+BSapsZepuADcD8lNDDwDiwAmhODN0MLAZGgWcpoZ8DA8ByoCMxdEfoDkSeZNDjwJX4o+xM2PHUhF5d6I+n9tMldUh9q3YmKsmdoTcU+lUxTAfCe1xX6ysErg8dQ7dqLq9BvRGJzoZVLQe4NtYbeg3VbgJWqU8i4YW/eOrfjZZYp/o09Kal3Vqj9kfiQXX/FHa9NuYNxrp+dXU5+SvpxktAD7AvCsSjqGr3gKE495gHrAQ2A7vi9ibQCxwGXk13N/59dKu31FEnxvtf3o/GvIobiCzR44sM2Aisj3OQpijJH4DXwOMoHn0p/EtWPHMpoAvoArqALqBTx9cBAPCXzJkf/a2rAAAAAElFTkSuQmCC);
+}
+
+#STCouponTipParent  #bijiaTable{
+    width:550px;
+    padding:3px;
+    background-color:#fff;
+    display:none;
+    position:absolute;
+    z-index:999999999999;
+    box-shadow:5px 5px 5px #999;
+    border:1px solid #ED145B;
+    border-radius:0px 3px 3px 3px;
+}
+#STCouponTipParent:hover #bijiaTable{
+    display:block;
+    z-index: 99999999999999999;
+    position:absolute;
+    padding-bottom: 40px;
+}
+
+#STCouponTipParent #lxSimilarTable{
+    position: relative;
+    z-index:99999999999;
+    width:100%;
+}
+#lxSimilarTable tr td{
+    border-bottom:1px solid #E8E8E8;
+    padding: 0px;
+    margin: 0px;
+}
+#STCouponTipParent #lxSimilarTable .lxSimilarImage img{
+    width:80px;
+    margin:5px;
+}
+#STCouponTipParent #lxSimilarTable .lxSimilarTitle{
+    color: #3d3d3d;
+    text-decoration: none;
+    line-height: 22px;
+    font-size:13px;
+}
+#STCouponTipParent #lxSimilarTable .lxSimilarTitle a{
+    text-decoration: none;
+    color:#3d3d3d;
+}
+#STCouponTipParent #lxSimilarTable .lxSimilarTitle a:hover{
+    text-decoration: none;
+    color:#f40;
+}
+#STCouponTipParent #lxSimilarTable .lxSimilarType{
+    color: #ff2900;
+    font-size: 12px;
+    font-weight: bold;
+}
+#STCouponTipParent #lxSimilarTable .lxSimilarSale{
+    color: #999;
+    font-size:13px;
+    text-align: center;
+    text-decoration:line-through;
+}
+#STCouponTipParent #lxSimilarTable .lxSimilarPrice{
+    color: #ff2900;
+    font: 700 18px Arial;
+    text-align: center;
+}
+#STCouponTipParent #lxSimilarTable .lxSimilarShop{
+    color: #999;
+}
+#STCouponTipParent #lxSimilarTable .lxSimilarLocation{
+    color: #999;
+    text-align: center;
+}
+#lxSortTable{
+    border-collapse:collapse;
+}
+#lxSortTable td{
+    border-bottom:2px solid #ED145B;
+}
+#lxSortTable #lxSortBySale,#lxSortByPrice{
+    height:40px;
+    font-size:16px;
+    width:120px;
+    text-align:center;
+    vertical-align:middle;
+    background-color:#ED145B;
+    color:#FFFFFF;
+    cursor:pointer;
+    border:1px solid #ED145B;
+}
+#lxSortByPrice{
+    background-color:#fff;
+    color:#333333;
+
+}
+#STquanContent{
+    list-style:none;
+    margin:0px;
+    padding:0;
+
+}
+#STquanContent li{
+    width:100px;
+    height:35px;
+    line-height:35px;
+    text-align:center;
+    background-color:#FFEDED;
+    border:1px solid #FF0000;
+    float:left;
+    margin:4px 4px;
+}
+#STquanContent li:hover{
+    background-color:#fbd6d6;
+}
+#STquanContent li a{
+    display:block;
+    width:100px;
+    height:35px;
+    text-decoration:none;
+    color:#FF0036;
+}
+#STquanContent li .lxlijianjuanA{
+    color:#fff;
+    background-color: #FF0036;
+}
+#STquanContent li .lxlijianjuanA:hover{
+    background-color: #e21919;
+}

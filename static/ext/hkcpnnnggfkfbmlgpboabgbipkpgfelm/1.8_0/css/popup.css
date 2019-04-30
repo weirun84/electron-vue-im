@@ -1,0 +1,123 @@
+@charset "utf-8";
+
+body {
+	min-width: 530px;
+	overflow-x: hidden;
+	font-family: Arial,"黑体";
+}
+
+#search input[type="text"]{
+	width:430px;
+	height:35px;
+	border:1px slide #4791FF;
+	magin:0px;
+	font-size:14px;
+	padding:0px 5px 0px 5px;
+	outline: 0;
+	magin:0px;
+	float:left;
+}
+#search input[type="text"]:foucus{
+	border:1px slide #4791FF;
+}
+#search input[type="submit"]{
+	height:39px;
+	width:78px;
+	background: #317ef3;
+	box-shadow: 1px 1px 1px #ccc;
+	color:#fff;
+	outline: 0px;
+	border:0;
+	magin:1px 0px 0px 0px;
+	padding:0px;
+	font-size:16px;
+}
+
+#quanParent{
+	font-family:Arial,"黑体";
+	font-size:14px;
+	color:#323232;
+	margin:5px 0px 0px 0px;
+}
+#quanParent #quanTip{
+	display:table-cell;
+	height:40px;
+	line-height:40px;
+	font-size:18px;
+	background-color:#3388FF;
+	color:#ffffff;
+	display:inline-block;
+	cursor:pointer;
+	margin-left:1px;
+	border-radius:2px;
+	padding:0px 15px 0px 12px;
+}
+#quanParent #quanTip a{
+	color:#fff;
+	text-decoration:none;
+}
+#quanParent #quanTip a:hover{
+	text-decoration:underline;
+}
+#quanParent #quanTip img{
+	vertical-align:middle;
+	width:30px;
+	height:30px;
+	margin-top:-2px;
+}
+
+#quanParent table{
+	width:528px;
+	border-left:1px solid #E8E8E8;
+	border-bottom:1px solid #E8E8E8;
+	box-shadow:5px 5px 5px #999;
+	background-color:#fff;
+
+}
+
+#quanParent:hover table{
+	display:table;
+}
+#quanParent table th{
+	font-size:15px;
+	background-color:#3388FF;
+	color:#ffffff;
+	font-weight:500;
+}
+
+#quanParent table td,th{
+	height:35px;
+	padding:0px 20px 0px 20px;
+	border-top:1px solid #E8E8E8;
+	border-right:1px solid #E8E8E8;
+	text-align:center;
+
+}
+#quanParent table tbody .valueTd{
+	padding:0px 19px 0px 19px;
+}
+#quanParent table tbody .valueTd a{
+	text-decoration:none;
+}
+#quanParent table tbody .valueTd a:hover{
+	text-decoration:underline;
+}
+#quanParent table tbody .valueTd span{
+	font-size:17px;
+	color:#fd0000;
+}
+#quanParent table tbody tr:nth-child(even){
+	background-color:#F9F9F9;
+}
+#jingzhewang{
+	text-align:center;
+	margin:20px 0px 0px 0px;
+}
+#jingzhewang a{
+	color:#555;
+	font-size:16px;
+	text-decoration:none;
+}
+#jingzhewang a:hover{
+	text-decoration:underline;
+}

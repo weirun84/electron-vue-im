@@ -1,0 +1,71 @@
+#layout-main
+  width 100% !important
+  height 100% !important
+  flex 0 1 100% !important
+
+#header
+  display block !important
+  // 登录时去掉背景
+  &.login-header
+    background none
+  > upload-list > .upload-container-wrap.ng-isolate-scope
+    margin-right 96px !important
+
+#body
+  height 100% !important
+  flex 0 1 100% !important
+
+@font-face
+  font-family "hxim-font"
+  src url('http://at.alicdn.com/t/font_280876_w2j6c7jbq6.eot?t=1548768162814') /* IE9*/
+  src url('http://at.alicdn.com/t/font_280876_w2j6c7jbq6.eot?t=1548768162814#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('http://at.alicdn.com/t/font_280876_w2j6c7jbq6.woff?t=1548768162814') format('woff'), /* chrome, firefox */
+  url('http://at.alicdn.com/t/font_280876_w2j6c7jbq6.ttf?t=1548768162814') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('http://at.alicdn.com/t/font_280876_w2j6c7jbq6.svg?t=1548768162814#iconfont') format('svg')
+  /* iOS 4.1- */
+
+ul.hxim-window-operations
+  position absolute
+  top 0
+  right 0
+  z-index 1
+  > li
+    font-family "hxim-font" !important
+    font-style normal
+    -webkit-font-smoothing antialiased
+    float right
+    width 23px
+    height 23px
+    line-height 23px
+    font-size 12px
+    text-align center
+    color #000
+    cursor pointer
+    -webkit-app-region no-drag
+    &:hover
+      background-color #e5e5e5
+    &.window-minimize:before
+      content "\e665"
+    &.window-maximization:before
+      content "\e622"
+    &.window-close:before
+      content "\e664"
+    &.window-restore:before
+      content "\e673"
+
+
+ul.hxim-window-operations > li.window-close:hover
+	color #fff
+	background-color #e4393c
+
+
+.login-form
+  &.login-tab
+    height 360px
+
+.ding-modal
+  .login-form
+    height 310px
+
+.client-download-guide
+    display none

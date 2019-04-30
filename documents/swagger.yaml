@@ -1,0 +1,1564 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: G5 IM API
+  description: 华夏航空内部沟通接口文档
+  contact:
+    email: zhangyang1@chinaexpressair.com
+host: 10.152.21.175:5000
+# basePath: 
+tags:
+  - name: target_type
+    description: '接收着类型,选项: single,group'
+  - name: target_id
+    description: '接收消息用户ID,员工工牌号'
+  - name: target_name
+    description: '接收者在系统中显示的名称,员工姓名,附带1,2,3...'
+  - name: from_type
+    description: '发送方类型,选项如: 用户user,机器人robot,部门department,公司admin,自定义群组group...'
+  - name: from_id
+    description: '发送方ID,员工工牌号,部门GUID...'
+  - name: from_name
+    description: 发送方显示的名称
+  - name: from_platform
+    description: '发送方设备及平台,ios,ipad,android,pad,pc'
+  - name: create_time
+    description: '消息发送时间,精确到秒'
+  - name: msg_type
+    description: '消息类型,文字:text;图片:image;音频:voice;视频:video;文件:file;任务:task;位置:location'
+  - name: msg_body
+    description: '消息内容,是一个json,JSON格式后面确定'
+schemes:
+- "http"
+paths:
+  /employees:
+    get:
+      tags:
+        - employees
+      summary: 获取所有员工
+      description: 通过员工姓名匹配员工
+      operationId: getEmployees
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/employees/{eId}':
+    get:
+      tags:
+        - employees
+      summary: 通过工牌号获得指定员工信息
+      description: 通过工牌号获得指定员工信息
+      operationId: getStaffById
+      parameters:
+        - name: eId
+          in: path
+          description: 员工工牌号
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  /employees/{eId}/messageList:
+    get:
+      tags:
+        - employees
+      summary: 通过工牌号和截止日期获得指定员工消息列表
+      description: 通过工牌号和截止日期获得指定员工消息列表
+      operationId: getMessageListById
+      parameters:
+        - name: eId
+          in: path
+          description: 员工工牌号
+          required: true
+          type: integer
+          format: int32
+        - name: expire
+          in: query
+          required: true
+          type: integer
+          format: int32
+          
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/employees/{eId}/nodistrub':
+    post:
+      tags:
+        - employees
+      summary: 免打扰设置
+      description: ''
+      operationId: postNodistrub
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: eId
+          in: path
+          description: 员工工牌号
+          required: true
+          type: integer
+          format: int32
+        - name: type
+          in: formData
+          description: '免打扰对象类型(single 个人,group 群组, all 所有 )'
+          required: true
+          type: string
+        - name: fromId
+          in: formData
+          description: 发送方ID
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/employees/{eId}/groups':
+    get:
+      tags:
+        - employees
+        - groups
+      summary: 获取指定用户的所有群组
+      description: ''
+      operationId: getStaffGroupsById
+      parameters:
+        - name: eId
+          in: path
+          description: 员工工牌号
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              groups:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    gId:
+                      type: integer
+                      format: int64
+                    groupName:
+                      type: string
+                    groupDescription:
+                      type: string
+                    groupOwner:
+                      type: integer
+                      format: int32
+                    ctime:
+                      type: string
+                      format: date-time
+                    mtime:
+                      type: string
+                      format: date-time
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/employees/{eId}/groups/{gId}/groupShield':
+    post:
+      tags:
+        - employees
+        - groups
+      summary: 指定用户是否屏蔽指定群的消息
+      description: ''
+      operationId: setGroupShieldById
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: eId
+          description: 员工工牌号
+          in: path
+          required: true
+          type: integer
+          format: int32
+        - name: gId
+          description: 群组ID
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: isDenied
+          description: 是否拒绝
+          in: formData
+          required: true
+          type: boolean
+          default: True
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  /employees/findByDeptId:
+    get:
+      tags:
+        - employees
+      summary: 通过部门ID获取员工列表
+      description: 通过部门ID获取员工列表
+      operationId: findByDeptId
+      parameters:
+        - name: deptId
+          in: query
+          description: 部门ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  /groups:
+    post:
+      tags:
+        - groups
+      summary: 新建群组
+      description: ''
+      operationId: createGroup
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: groupInfo
+          description: 创建群组需要的信息
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              groupType:
+                type: string
+                description: '群组类别:ORGANIZATION>按组织架构 FLIGHT>按航班沟通 CONFERENCE>按会议 PROJECT>按项目 LIVE>图文直播 GROUP>自定义'
+              owner:
+                type: integer
+                description: 群主的工牌号
+                format: int64
+              groupName:
+                type: string
+                description: 群组名称
+              inviteMode:
+                type: integer
+                description: 邀请方式(0>群主邀请;1>群员可邀请)
+              admitMode:
+                type: integer
+                description: '入群验证(0>需要管理员同意,1>不需要管理员同意,2>不允许加入)'
+              members:
+                type: array
+                items:
+                  type: integer
+                  format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/groups'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+    get:
+      tags:
+        - groups
+      summary: 获取可用的群组列表
+      description: ''
+      operationId: getValidGroups
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/groups' 
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/groups/GroupsByType/{groupType}':
+    get:
+      tags:
+        - groups
+      summary: 按群组类型获取群组列表
+      description: ''
+      operationId: getGroupsByType
+      parameters:
+        - name: groupType
+          in : path
+          description: '群组类别:organization>按组织架构 flight>按航班沟通 conference>按会议 project>按项目 lives>图文直播 custom>自定义'
+          type: string
+          required: true
+      responses:
+        200: 
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/groups' 
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  /groups/groupsByEId/{eId}:
+    get:
+      tags:
+        - groups
+        - employees
+      summary: 获取指定员工加入的所有群组
+      description: ''
+      operationId: getGroupsByEId
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: eId
+          in: path
+          description: 员工工牌号
+          required: true
+          type: integer
+          format: int32
+      responses:
+        200: 
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/groups' 
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+      
+  '/groups/{gId}':
+    get:
+      tags:
+        - groups
+      summary: 获取群组信息
+      description: ''
+      operationId: getGroup
+      parameters:
+        - name: gId
+          in: path
+          description: ''
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/groups'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+    post:
+      tags:
+        - groups
+      summary: 修改群组
+      description: ''
+      operationId: updateGroup
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: gId
+          description: 群组ID
+          in: path
+          required: true
+          type: integer
+        - name: description
+          description: 群组描述
+          in: formData
+          type: string
+        - name: inviteMode
+          type: integer
+          description: 邀请方式(0>群主邀请;1>群员可邀请)
+          in: formData
+        - name: admit_mode
+          type: integer
+          description: 入群验证(0>需要管理员同意,1>不需要管理员同意,2>不允许加入)
+          in: formData
+        - name: managerCount
+          type: integer
+          description: 管理员数量
+          in: formData
+        - name: proclamation
+          type: string
+          description: 群公告
+          in: formData
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/groups'
+        '400':
+          description: 无效的群组ID
+        401:
+          description: 无权修改该群组信息
+        403:
+          description: 禁止修改该群组信息
+        404:
+          description: 指定的群组不存在
+    delete:
+      tags:
+        - groups
+      summary: 删除群组
+      description: ''
+      operationId: deleteGroup
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: gId
+          description: 群组ID
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/groups/{gId}/members':
+    post:
+      tags:
+        - groups
+      summary: 更新群组成员
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: gId
+          description: 群组ID
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: members
+          description: 群组成员
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              addMembers:
+                type: array
+                items:
+                  type: integer
+                  format: int32
+                  description: 员工工牌号
+              removeMembers:
+                type: array
+                items:
+                  type: integer
+                  format: int32
+                  description: 员工工牌号
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+    get:
+      tags:
+        - groups
+      summary: 获取指定群组的所有成员
+      description: ''
+      operationId: getGroupMembers
+      parameters:
+        - name: gId
+          description: 群组ID
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              Members:
+                type: array
+                items:
+                  $ref: '#/definitions/groupMember'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  /groups/{gId}/owner:
+    post:
+      tags:
+       - groups
+      summary: 移交群主
+      description: ""
+      operationId: updateGroupOwner
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: gId
+          description: '群组ID'
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: operator
+          description: '执行移交操作的员工工牌号'
+          in: formData
+          required: true
+          type: integer
+          format: int32
+        - name: owner
+          description: 群主工牌号
+          in: formData
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  /messages/private:
+    post:
+      tags:
+        - messages
+      summary: 发送私聊消息
+      description: ''
+      operationId: postPrivateMessage
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          description: "发送消息的内容 JSON对象"
+          required: true
+          schema:
+            $ref: "#/definitions/message"
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在 
+        
+  '/messages/public':
+    post:
+      tags:
+        - messages
+      summary: 发送群组消息
+      description: ''
+      operationId: postPublicMessage
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "发送消息的内容 JSON对象"
+          required: true
+          schema:
+            $ref: "#/definitions/message"
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/messages/private/{targetId}/{fromId}':
+    get:
+      tags:
+        - messages
+      summary: 获取指定消息记录
+      description: ''
+      operationId: getPrivateMessageByPeriod
+      parameters:
+        - name: targetId
+          description: 接收者ID
+          in: path
+          required: true
+          type: integer
+          format: int32
+        - name: fromId
+          description: 发送者ID
+          in: path
+          required: true
+          type: integer
+          format: int32
+        - name: startId
+          in: query
+          description: 起始消息ID
+          required: true
+          type: integer
+          format: int64
+        - name: endId
+          in: query
+          description: 结束消息ID
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/messages/public/{targetType}/{targetId}':
+    get:
+      tags:
+        - messages
+      summary: 获取指定消息记录
+      description: ''
+      operationId: getPublicMessageByPeriod
+      parameters:
+        - name: targetType
+          description: '接收者类别:organization>按组织架构 flight>按航班沟通 conference>按会议 project>按项目 lives>图文直播 custom>自定义'
+          in: path
+          required: true
+          type: string
+        - name: targetId
+          description: 接收者ID
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: startId
+          in: query
+          description: 起始消息ID
+          required: true
+          type: integer
+          format: int64
+        - name: endId
+          in: query
+          description: 结束消息ID
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/messages/private/{targetId}/{fromId}/recently':
+    get:
+      tags:
+        - messages
+      summary: 获取最近指定条数的消息
+      description: ''
+      operationId: getPrivateMessageRecently
+      parameters:
+        - name: targetId
+          description: 接收者ID
+          in: path
+          required: true
+          type: integer
+          format: int32
+        - name: fromId
+          description: 发送者ID
+          in: path
+          required: true
+          type: integer
+          format: int32
+        - name: nums
+          description: 消息条数
+          in: query
+          required: false
+          default: 10
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/messages/public/{targetType}/{targetId}/recently':
+    get:
+      tags:
+        - messages
+      summary: 获取最近指定条数的消息
+      description: ''
+      operationId: getPublicMessageRecently
+      parameters:
+        - name: targetType
+          description: '接收者类别:organization>按组织架构 flight>按航班沟通 conference>按会议 project>按项目 lives>图文直播 custom>自定义'
+          in: path
+          required: true
+          type: string
+        - name: targetId
+          description: 接收者ID
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: nums
+          description: 消息条数
+          in: query
+          required: false
+          default: 10
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/messages/public/{targetType}/{targetId}/{msgId}':
+    get:
+      tags:
+        - messages
+      summary: 获取指定消息记录
+      description: ''
+      parameters:
+        - name: targetType
+          description: '接收者类别:organization>按组织架构 flight>按航班沟通 conference>按会议 project>按项目 lives>图文直播 custom>自定义'
+          in: path
+          required: true
+          type: string
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+        - name: msgId
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+          
+  '/messages/private/{targetId}/{fromId}/{msgId}/retract':
+    post:
+      tags:
+        - messages
+      summary: 撤回指定消息
+      description: ""
+      operationId: retractPrivateMessageById
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+        - name: fromId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+        - name: msgId
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+              
+  '/messages/public/{targetType}/{targetId}/{msgId}/retract':
+    post:
+      tags:
+        - messages
+      summary: 撤回指定消息
+      description: ""
+      operationId: rectractPbulicMessageById
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: targetType
+          description: '接收者类别:organization>按组织架构 flight>按航班沟通 conference>按会议 project>按项目 lives>图文直播 custom>自定义'
+          in: path
+          required: true
+          type: string
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+        - name: msgId
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/messages/private/{targetId}/{fromId}/{msgId}/status':
+    post:
+      tags:
+        - messages
+      summary: 修改指定消息的已读状态
+      description: ""
+      operationId: setPrivateMessageStatusById
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+          format: int32
+        - name: fromId
+          description: 发送方ID
+          in: path
+          required: true
+          type: integer
+          format: int32
+        - name: msgId
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: status
+          in: formData
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+    get:
+      tags:
+        - messages
+      summary: 获取指定消息的已读状态
+      description: ""
+      operationId: getPrivateMessageStatusById
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+          format: int32
+        - name: fromId
+          description: 发送方ID
+          in: path
+          required: true
+          type: integer
+          format: int32
+        - name: msgId
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              targetType:
+                type: integer
+                format: int64
+              targetId:
+                type: integer
+                format: int64
+              msgId:
+                type: integer
+                format: int64
+              status:
+                type: string
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+          
+  '/messages/public/{targetType}/{targetId}/{msgId}/status':
+    post:
+      tags:
+        - messages
+      summary: 修改指定消息的已读状态
+      description: ""
+      operationId: setPublicMessageStatusById
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: targetType
+          description: '接收者类别:organization>按组织架构 flight>按航班沟通 conference>按会议 project>按项目 lives>图文直播 custom>自定义'
+          in: path
+          required: true
+          type: string
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: msgId
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: status
+          in: formData
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+    get:
+      tags:
+        - messages
+      summary: 获取指定消息的已读状态
+      description: ""
+      operationId: getPublicMessageStatusById
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: targetType
+          description: '接收者类别:organization>按组织架构 flight>按航班沟通 conference>按会议 project>按项目 lives>图文直播 custom>自定义'
+          in: path
+          required: true
+          type: string
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: msgId
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              targetType:
+                type: integer
+                format: int64
+              targetId:
+                type: integer
+                format: int64
+              msgId:
+                type: integer
+                format: int64
+              status:
+                type: string
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+          
+  '/messages/private/{targetId}/{fromId}/latest':
+    get:
+      tags:
+        - messages
+      summary: 获取最新一条数的消息
+      description: ''
+      operationId: getPrivateMessageLatest
+      parameters:
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+        - name: fromId
+          description: 发送方ID
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在        
+          
+  '/messages/public/{targetType}/{targetId}/latest':
+    get:
+      tags:
+        - messages
+      summary: 获取最新一条数的消息
+      description: ''
+      operationId: getPublicMessageLatest
+      parameters:
+        - name: targetType
+          description: '接收者类别:organization>按组织架构 flight>按航班沟通 conference>按会议 project>按项目 lives>图文直播 custom>自定义'
+          in: path
+          required: true
+          type: string
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/messages/private/{targetId}/{fromId}/unRead':
+    get:
+      tags:
+        - messages
+      summary: 获得未读条数
+      description: ''
+      operationId: getPrivateMessageUnread
+      parameters:
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+        - name: fromId
+          description: 发送方ID
+          in: path
+          required: true
+          type: integer
+        - name: maxNum
+          in: query
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  '/messages/public/{targetType}/{targetId}/unRead':
+    get:
+      tags:
+        - messages
+      summary: 获得未读条数
+      description: ''
+      operationId: getPublicMessageUnread
+      parameters:
+        - name: targetType
+          description: '接收者类别:organization>按组织架构 flight>按航班沟通 conference>按会议 project>按项目 lives>图文直播 custom>自定义'
+          in: path
+          required: true
+          type: string
+        - name: targetId
+          description: 接收方ID
+          in: path
+          required: true
+          type: integer
+        - name: maxNum
+          in: query
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/message'
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+  /sensitiveWord:
+    post:
+      tags:
+        - sensitiveWord
+      summary: 增加敏感词
+      description: ""
+      operationId: postSensitiveWord
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: wdSensitive
+          in: formData
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+    put:
+      tags:
+        - sensitiveWord
+      summary: 修改敏感词
+      description: ""
+      operationId: putSensitiveWord
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: wdOldSensitive
+          in: formData
+          required: true
+          type: string
+        - name: wdNewSensitive
+          in: formData
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+    delete:
+      tags:
+        - sensitiveWord
+      summary: 删除敏感词
+      description: ""
+      operationId: delSensitiveWord
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: wdSensitive
+          in: formData
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+    get:
+      tags:
+        - sensitiveWord
+      summary: 查找敏感词
+      description: ""
+      operationId: getSensitiveWord
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: wdSensitive
+          in: formData
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              isSensitive:
+                type: boolean
+        400:
+          description: 无效的请求
+        401: 
+          description: 未被授权执行此操作
+        403:
+          description: 请求被拒绝
+        404:
+          description: 请求的资源不存在
+                
+definitions:
+  groups:
+    type: object
+    properties:
+      gId:
+        type: integer
+        format: int64
+        description: 群组ID,由后端产生
+      name:
+        type: string
+        description: 群组名称
+      desc:
+        type: string
+        description: 群组描述
+      theme: 
+        type: string
+        description: 主题 /HX/沟通/类别/分类1/分类2/...
+      groupType: 
+        type: string
+        description: 群组类型
+        enum:
+        - "organization"  # 按组织架构
+        - "flight"        # 按航班沟通
+        - "conference"    # 按会议
+        - "project"       # 按项目
+        - "lives"         # 图文直播
+        - "custom"        # 自定义
+      owner:
+        type: integer
+        format: int32
+        description: 群组工牌号
+      maxMemberCount:
+        type: integer
+        format: int32
+        description: 群组最大成员人数
+      ctime:
+        type: string
+        format: date-time
+        description: 创建时间
+      mtime:
+        type: string
+        format: date-time
+        description: 最近一次修改时间
+      inviteMode:
+        type: integer
+        description: '邀请方式(0>群主邀请 1>群员可邀请)'
+      admitmode:
+        type: integer
+        description: '入群验证(0>需要管理员同意 1>不需要管理员同意 2>不允许加入)'
+  groupMember:
+    type: object
+    properties:
+      memberEId:
+        type: integer
+        format: int32
+        description: 员工工牌号
+      memberName:
+        type: string
+        description: 群成员姓名
+      memberLevel:
+        type: integer
+        format: int32
+        description: 群成员身份(0>群主,1>管理员,2>普通成员)
+      
+  message:
+    type: object
+    properties:
+      version:
+        type: integer
+        format: int32
+      targetType:
+        type: string
+        description: 'single个人,group群组,discuss讨论组'
+      fromType:
+        type: string
+        description: 'user个人,robot机器人,department部门,admin公司系统管理员,group群组'
+      msgType:
+        type: string
+        description: 'text文本,image图片,voice语音,video视频,file文件,task任务,location位置'
+      targetId:
+        type: integer
+        format: int64
+        description: 接收方ID
+      fromId:
+        type: integer
+        format: int64
+        description: 发送方ID
+      msgBody:
+        type: object
+        description: 根据不同的消息类型生成的JSON
+        properties:
+          msgType: 
+            type: "string"
+            description: "消息类型"
+            enum:
+            - "text"
+            - "image"
+            - "voice"
+            - "video"
+            - "file"
+            - "task"
+            - "location"
+            - "lives"
+            - "emoticon"
+          msgContent:
+            type: object
+            description: "消息内容"
+            properties:
+              # 文本消息
+              text:
+                type: "string"
+                description: "消息内容: 文字描述"
+              extras:
+                type: "string"
+                description: "消息元数据 JSON对象"
+              # 图片消息
+              mediaId:
+                type: "string"
+                description: "文件上传之后服务器端所返回的 key，用于之后生成下载的 url"
+              mediaCrc32: 
+                type: string
+                description: "文件的 crc32 校验码，用于下载大图的校验"
+              width:
+                type: integer
+                description: "原始图片的宽度"
+              height:
+                type: integer
+                description: "原始图片的高度"
+              format: 
+                type: string
+                description: "原始文件的格式"
+              fileSize:
+                type: integer
+                description: "文件大小"
+              durationTime:
+                type: integer
+                description: "语音时长"
+              arn: 
+                type: string
+                description: "资源链接"
+              
+              
+              
